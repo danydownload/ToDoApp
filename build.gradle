@@ -23,6 +23,7 @@ ext {
     compileSdkVersion = 33
 
     // App dependencies
+    activityVersion = "1.6.1"
     appCompatVersion = "1.6.0"
     constraintLayoutVersion = "2.1.4"
     coroutinesVersion = "1.6.4"
