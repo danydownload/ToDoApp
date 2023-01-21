@@ -6,14 +6,18 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.SearchView
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dt.learning.myapp2.R
 import com.dt.learning.myapp2.databinding.FragmentTasksBinding
 import com.dt.learning.myapp2.util.onQueryTextChanged
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.Objects
 
 @AndroidEntryPoint
 class TasksFragment : Fragment(R.layout.fragment_tasks) {
@@ -42,44 +46,54 @@ class TasksFragment : Fragment(R.layout.fragment_tasks) {
             taskAdapter.submitList(listTasks)
         }
 
-        setHasOptionsMenu(true)
+        setupMenu()
 
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.menu_fragment_task, menu)
 
-        val searchItem = menu.findItem(R.id.action_search)
-        val searchView = searchItem.actionView as SearchView
+    private fun setupMenu() {
+        (requireActivity() as MenuHost).addMenuProvider(object: MenuProvider {
 
-        searchView.onQueryTextChanged {query ->
-            viewModel.searchQuery.value = query
-        }
+            override fun onPrepareMenu(menu: Menu) {
+                // Handle for example visibility of menu items
+            }
 
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.menu_fragment_task, menu)
+
+                val searchItem = menu.findItem(R.id.action_search)
+                val searchView = searchItem.actionView as SearchView
+
+                searchView.onQueryTextChanged {query ->
+                    viewModel.searchQuery.value = query
+                }
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                return when (menuItem.itemId) {
+                    R.id.action_sort_by_name -> {
+                        // TODO
+                        true
+                    }
+                    R.id.action_sort_by_date_created -> {
+                        //TODO
+                        true
+                    }
+                    R.id.action_hide_completed_tasks -> {
+                        menuItem.isChecked = !menuItem.isChecked
+                        //TODO
+                        true
+                    }
+                    R.id.action_delete_all_completedd_tasks -> {
+                        // TODO
+                        true
+                    }
+                    else -> false
+                }
+
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_sort_by_name -> {
-                // TODO
-                true
-            }
-            R.id.action_sort_by_date_created -> {
-                //TODO
-                true
-            }
-            R.id.action_hide_completed_tasks -> {
-                item.isChecked = !item.isChecked
-                //TODO
-                true
-            }
-            R.id.action_delete_all_completedd_tasks -> {
-                // TODO
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
 
 }
