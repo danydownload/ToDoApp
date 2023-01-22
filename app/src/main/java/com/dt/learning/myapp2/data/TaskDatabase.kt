@@ -27,13 +27,13 @@ abstract class TaskDatabase : RoomDatabase() {
 
             applicationScope.launch {
 
-                dao.insert(Task("Buy Groceries", "Pick up milk, bread, eggs, and vegetables at the store"))
+                dao.insert(Task("Buy Groceries", "Pick up milk, bread, eggs, and vegetables at the store", completed = true))
                 dao.insert(Task("Do Laundry", "Wash and fold all dirty clothes"))
-                dao.insert(Task("Pay Rent", "Transfer rent payment to landlord via online banking"))
+                dao.insert(Task("Pay Rent", "Transfer rent payment to landlord via online banking", important = true))
                 dao.insert(Task("Book Doctor's Appointment", "Schedule a check-up with primary care physician"))
                 dao.insert(Task("Send Birthday Gift", "Purchase and send a gift to friend's birthday"))
                 dao.insert(Task("Return Library Books", "Drop off overdue books at the library"))
-                dao.insert(Task("File Taxes", "Complete and submit federal and state tax forms"))
+                dao.insert(Task("File Taxes", "Complete and submit federal and state tax forms", completed = true, important = true))
                 dao.insert(Task("Renew Driver's License", "Make an appointment at the DMV to renew driver's license"))
                 dao.insert(Task("Plan Vacation", "Research and book flights, hotels, and activities for upcoming trip"))
                 dao.insert(Task("Mow Lawn", "Cut the grass in the front and back yards"))
