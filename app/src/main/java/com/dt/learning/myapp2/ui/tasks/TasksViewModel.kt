@@ -1,10 +1,12 @@
 package com.dt.learning.myapp2.ui.tasks
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.dt.learning.myapp2.data.PreferencesManager
 import com.dt.learning.myapp2.data.SortOrder
+import com.dt.learning.myapp2.data.Task
 import com.dt.learning.myapp2.data.TaskDao
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,10 +24,6 @@ class TasksViewModel @Inject constructor(
     val searchQuery = MutableStateFlow("")
     val preferencesFlow = preferencesManager.preferencesFlow
 
-
-    val sortOrder = MutableStateFlow(SortOrder.BY_DATE)
-    val hideCompleted = MutableStateFlow(false)
-
     private val taskFlow = combine(
         searchQuery,
         preferencesFlow
@@ -36,6 +34,18 @@ class TasksViewModel @Inject constructor(
     }
 
     val tasks = taskFlow.asLiveData()
+
+    fun onTaskSelected(task: Task) {
+        viewModelScope.launch {
+
+        }
+    }
+
+    fun onTaskCheckedChanged(task: Task, isChecked : Boolean) {
+        viewModelScope.launch {
+            taskDao.update(task.copy(completed = isChecked))
+        }
+    }
 
     fun onSortOrderSelected(sortOrder: SortOrder) =
         viewModelScope.launch {

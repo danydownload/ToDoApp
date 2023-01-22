@@ -17,6 +17,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dt.learning.myapp2.R
 import com.dt.learning.myapp2.data.SortOrder
+import com.dt.learning.myapp2.data.Task
 import com.dt.learning.myapp2.databinding.FragmentTasksBinding
 import com.dt.learning.myapp2.util.onQueryTextChanged
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,7 +26,7 @@ import kotlinx.coroutines.launch
 import java.util.Objects
 
 @AndroidEntryPoint
-class TasksFragment : Fragment(R.layout.fragment_tasks) {
+class TasksFragment : Fragment(R.layout.fragment_tasks), TasksAdapter.onItemClickListener {
 
     private val viewModel : TasksViewModel by viewModels()
 
@@ -33,7 +34,7 @@ class TasksFragment : Fragment(R.layout.fragment_tasks) {
         super.onViewCreated(view, savedInstanceState)
 
         val binding = FragmentTasksBinding.bind(view)
-        val taskAdapter = TasksAdapter()
+        val taskAdapter = TasksAdapter(this)
 
         binding.apply {
 
@@ -52,9 +53,15 @@ class TasksFragment : Fragment(R.layout.fragment_tasks) {
         }
 
         setupMenu()
-
     }
 
+    override fun onItemClick(task: Task) {
+        viewModel.onTaskSelected(task)
+    }
+
+    override fun onChcekBoxClick(task: Task, isChecked: Boolean) {
+        viewModel.onTaskCheckedChanged(task, isChecked)
+    }
 
     private fun setupMenu() {
         (requireActivity() as MenuHost).addMenuProvider(object: MenuProvider {
