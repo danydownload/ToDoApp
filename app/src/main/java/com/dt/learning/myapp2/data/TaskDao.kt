@@ -1,7 +1,7 @@
 package com.dt.learning.myapp2.data
 
 import androidx.room.*
-import com.dt.learning.myapp2.ui.tasks.SortOrder
+
 import kotlinx.coroutines.flow.Flow
 
 @Dao
