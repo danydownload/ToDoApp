@@ -20,13 +20,13 @@ interface TaskDao {
     fun getTasksSortedByDateCreated(searchQuery: String, hideCompleted: Boolean) : Flow<List<Task>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(task: Task)
+    suspend fun insert(task: Task)
 
     @Update
-    fun update(task: Task)
+    suspend fun update(task: Task)
 
     @Delete
-    fun delete(task: Task)
+    suspend fun delete(task: Task)
 
 
 }
