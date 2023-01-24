@@ -11,7 +11,7 @@ import java.text.DateFormat
 @Parcelize
 data class Task(
     val name: String,
-    val description: String,
+    val description: String = "Default Description",
     val important: Boolean = false,
     val completed: Boolean = false,
     val created: Long = System.currentTimeMillis(),
