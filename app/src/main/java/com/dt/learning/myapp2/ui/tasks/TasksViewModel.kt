@@ -94,15 +94,21 @@ class TasksViewModel @Inject constructor(
         tasksEventChannel.send(TasksEvent.ShowTaskSavedConfirmationMessage(text))
     }
 
+    fun onDeleteAllCompletedClick() = viewModelScope.launch {
+        tasksEventChannel.send(TasksEvent.NavigateToDeleteAllCompletedScreen)
+    }
+
 
     // rappresenta i tipi differenti di eventi che vogliamo mandare al fragment.
     // Ora sopra dobbiamo creare un channel a cui mandare questi eventi
     sealed class TasksEvent {
         // il renderlo object migliora l'efficenza. Fa si' che venga creato una sola volta.
+        // lo facciamo object se non ha bisogno di argomenti
         object NavigateToAddTaskScreen : TasksEvent()
         data class NavigateToEditTaskScreen(val task: Task) : TasksEvent()
         data class ShowUndoDeleteTaskMessage(val task: Task) : TasksEvent()
         data class ShowTaskSavedConfirmationMessage(val msg: String) : TasksEvent()
+        object NavigateToDeleteAllCompletedScreen : TasksEvent()
 
     }
 }

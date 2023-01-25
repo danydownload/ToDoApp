@@ -39,7 +39,9 @@ class TasksFragment : Fragment(R.layout.fragment_tasks), TasksAdapter.onItemClic
 
     private val viewModel : TasksViewModel by viewModels()
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    lateinit var searchView : SearchView
+
+        override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         val binding = FragmentTasksBinding.bind(view)
@@ -117,6 +119,10 @@ class TasksFragment : Fragment(R.layout.fragment_tasks), TasksAdapter.onItemClic
                     is TasksViewModel.TasksEvent.ShowTaskSavedConfirmationMessage -> {
                        Snackbar.make(requireView(), event.msg, Snackbar.LENGTH_SHORT).show()
                     }
+                    TasksViewModel.TasksEvent.NavigateToDeleteAllCompletedScreen -> {
+                        val action = TasksFragmentDirections.actionGlobalDeleteAllCompletedDialogFragment()
+                        findNavController().navigate(action)
+                    }
                 }.exhaustive // lo trasforma in un'espressione cosi' otteniamo compile-time safety
             }
         }
@@ -143,7 +149,13 @@ class TasksFragment : Fragment(R.layout.fragment_tasks), TasksAdapter.onItemClic
                 menuInflater.inflate(R.menu.menu_fragment_task, menu)
 
                 val searchItem = menu.findItem(R.id.action_search)
-                val searchView = searchItem.actionView as SearchView
+                searchView = searchItem.actionView as SearchView
+
+                val pendingQuery = viewModel.searchQuery.value
+                if (pendingQuery != null && pendingQuery.isNotEmpty()) {
+                    searchItem.expandActionView()
+                    searchView.setQuery(pendingQuery, false)
+                }
 
                 searchView.onQueryTextChanged {query ->
                     viewModel.searchQuery.value = query
@@ -171,7 +183,7 @@ class TasksFragment : Fragment(R.layout.fragment_tasks), TasksAdapter.onItemClic
                         true
                     }
                     R.id.action_delete_all_completed_tasks -> {
-                        // TODO
+                        viewModel.onDeleteAllCompletedClick()
                         true
                     }
                     else -> false
@@ -181,5 +193,9 @@ class TasksFragment : Fragment(R.layout.fragment_tasks), TasksAdapter.onItemClic
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        searchView.setOnQueryTextListener(null)
+    }
 
 }
